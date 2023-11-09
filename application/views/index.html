@@ -1,45 +1,155 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <div class="form-box" style="border: 1px black solid;">
-        <h2>Create a New Post</h2>
-        <form method="POST" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <div class="form-group">
-                {{ form.post_pic.label(class="form-control-label") }}
-                {{ form.post_pic(class="form-control-file") }}
-                {% for error in form.post_pic.errors %}
-                    <span class="text-danger">{{ error }}</span>
-                {% endfor %}
-            </div>
-            <div class="form-group">
-                {{ form.caption.label(class="form-control-label") }}
-                {{ form.caption(class="form-control") }}
-                {% for error in form.caption.errors %}
-                    <span class="text-danger">{{ error }}</span>
-                {% endfor %}
-            </div>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-primary") }}
-            </div>
-        </form>
-    </div>
+<style>
+    .profile-card {
+        background-color: #f0f0f0;
+        padding: 20px;
+        text-align: center;
+    }
 
-    <div class="post-container">
-        {% for post in posts %}
-            <div class="post" style="border: 1px black solid; margin: 10px 0px;">
-                <img src="{{ url_for('static', filename='' + post.photo) }}" alt="Post Image">
-                <p>{{ post.caption }}</p>
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .profile-username {
+        font-size: 1.5rem;
+        margin-top: 10px;
+    }
+
+    .profile-fullname {
+        color: #777;
+    }
+
+    .post-form {
+        background-color: #fff;
+        padding: 20px;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .post-container {
+        margin-top: 20px;
+    }
+
+    .post-card {
+        background-color: #fff;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .user-profile-pic {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .user-username {
+        font-size: 1.2rem;
+    }
+
+    .post-img {
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .post-content {
+        padding: 10px;
+    }
+
+    .card-text {
+        font-size: 1.2rem;
+    }
+
+    .post-header-buttons {
+        margin-left: auto;
+    }
+
+    .post-button {
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="profile-card text-center">
+                <img src="{{ url_for('static', filename=current_user.profile_pic) }}" alt="Foto Profil" class="profile-pic img-fluid rounded-circle">
+                <h2 class="profile-username">{{ current_user.username }}</h2>
+                <p class="profile-fullname">{{ current_user.fullname }}</p>
             </div>
-        {% endfor %}
+        </div>
+        <div class="col-md-9">
+            <div class="post-form card mb-4">
+                <h2 class="mb-4">Buat Postingan Baru</h2>
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.post_pic.label(class="form-control-label") }}
+                        {{ form.post_pic(class="form-control-file") }}
+                        {% for error in form.post_pic.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.caption.label(class="form-control-label") }}
+                        {{ form.caption(class="form-control") }}
+                        {% for error in form.caption.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+            <div class="post-container">
+                {% for post in posts %}
+                    <div class="post-card card mb-4">
+                        <div class="post-header">
+                            <div class="post-header-info">
+                                {% if post.posts_owner.profile_pic %}
+                                    <img src="{{ url_for('static', filename=post.posts_owner.profile_pic) }}" alt="Foto Profil Pengguna" class="user-profile-pic rounded-circle">
+                                {% endif %}
+                                <h6 class="user-username">{{ post.posts_owner.username }}</h6>
+                            </div>
+                            <div class="post-header-buttons">
+                                <button class="post-button">Like</button>
+                                <button class="post-button">Comment</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="post-content">
+                                <img src="{{ url_for('static', filename=post.photo) }}" alt="Foto Postingan" class="post-img">
+                                <p class="card-text">{{ post.caption }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-    <div class="pagination-box">
-        {% for page_number in posts.iter_pages() %}
-            {% if page_number == posts.page %}
-                <a href="{{ url_for('index', page=page_number) }}" style="color: red;">{{page_number}}</a>
-            {% else %}
-                <a href="{{ url_for('index', page=page_number) }}" style="color: black;"{{page_number}}></a>
-            {% endif %}
-        {% endfor %}
-    </div>
+</div>
 {% endblock content %}

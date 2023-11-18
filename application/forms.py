@@ -31,9 +31,14 @@ class ResetPasswordForm(FlaskForm):
     submit              = SubmitField("reset password")
 
 class ForgotPasswordForm(FlaskForm):
-    email               = EmailField("email", validators=[DataRequired(), not_exists_email])
-    recaptcha           = RecaptchaField()
-    submit              = SubmitField("send link verification to email")
+    email = EmailField("Email", validators=[DataRequired(), not_exists_email])
+    new_password = PasswordField("New Password", validators=[DataRequired(), Length(min=8)])
+    confirm_new_password = PasswordField("Confirm New Password", validators=[DataRequired(), Length(min=8), EqualTo("new_password")])
+    submit = SubmitField("Change Password")
+
+
+
+
 
 class VerificationResetPasswordForm(FlaskForm):
     password            = PasswordField("new password", validators=[DataRequired(), Length(min=8)])

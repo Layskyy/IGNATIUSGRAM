@@ -6,7 +6,7 @@
             <img src="{{ url_for('static', filename='images/' + current_user.profile_pic ) }}" alt="Profile Photo">
         </div>
         <div class="profile-info">
-            <h2>{{current_user.fullname}}</h2>
+            <h2>{{ current_user.fullname }}</h2>
             <p>{{ current_user.bio }}</p>
             <p>Following: {{ current_user.following_users|length }}</p>
             <p>Follower: {{ current_user.follower_users|length }}</p>
@@ -15,8 +15,17 @@
     </div>
 
     <div class="image-container">
-        {% for post in posts %}
-        <div class="image-item"><img src="{{ url_for('static', filename='' + post.photo) }}" alt="Post Image"></div>
+        {% for post in user_posts %}
+            <div class="image-item">
+                {% if post.photo %}
+                    <img src="{{ url_for('static', filename='images/' + post.photo) }}" alt="Post Image">
+                {% else %}
+                    <p>No image found for this post.</p>
+                {% endif %}
+                <p>{{ post.caption }}</p>
+            </div>
         {% endfor %}
     </div>
+    
+    
 {% endblock content %}

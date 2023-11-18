@@ -1,6 +1,7 @@
 from application import app
 from dotenv import load_dotenv
 import os
+app.config.from_pyfile('config.py')
 
 #ASEP GUNAWAN
 #BUDI GUNAWAN UEGWIWEG

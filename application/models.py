@@ -1,7 +1,11 @@
+from flask_bcrypt import Bcrypt
 from flask_login import UserMixin
 
 from application import db
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+
+bcrypt = Bcrypt()
 
 class User(db.Model, UserMixin):
     __tablename__   = "users"
@@ -32,7 +36,7 @@ class Post(db.Model):
     __tablename__   = "posts"
     id              = db.Column(db.Integer, primary_key = True)
     author_id       = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
-    photo           = db.Column(db.String(128), nullable = False)
+    photo = db.Column(db.Text, nullable=False)
     caption         = db.Column(db.String(128), default="")
     status          = db.Column(db.Boolean, default=True)
     post_date       = db.Column(db.DateTime, default=datetime.utcnow)
